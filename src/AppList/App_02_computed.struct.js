@@ -1,11 +1,44 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react'
-import {SearchTextField} from './components/SearchTextField'
-import { ResultsList } from './components/ResultsList'
+import {SearchTextField} from '../components/SearchTextField'
+
 //mui stuff
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import { Typography } from '@material-ui/core';
+
+import { observable, computed, action, autorun } from 'mobx'
+
+class DailyPrice {
+  @observable start = 0;
+  @observable end = 0;
+
+  @computed.struct
+  get metrics(){
+    const {start, end} = this;
+    return {
+      delta: end - start,
+    };
+  }
+
+  @action
+  update(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+  constructor() {
+    autorun(() => {
+      const { delta } = this.metrics;
+      console.log(`Price Delta = ${delta}`);
+      
+    })
+  }
+}
+
+const price = new DailyPrice();
+price.update(0, 10)
+price.update(10, 20)
+price.update(20, 30)
+
 
 
 
@@ -26,7 +59,7 @@ class App extends React.Component {
     const { store } = this.props;
     return (
       <Fragment>
-        <Header />
+        {/* <Header /> */}
         <Grid container>
             <Grid item xs={12}>
               <Paper elevation={2} style={{ padding: '1rem' }}>
@@ -36,7 +69,7 @@ class App extends React.Component {
                     />
               </Paper>
             </Grid>
-            <ResultsList style={{ marginTop: '2rem' }} />
+            {/* <ResultsList style={{ marginTop: '2rem' }} /> */}
         </Grid>
       </Fragment>
 
@@ -44,16 +77,6 @@ class App extends React.Component {
   }
 }
 
-function Header(){
-  return (
-    <Typography
-      variant="subtitle1"
-      color="inherit"
-      style={{ marginBottom: 20, textAlign: 'center' }}
-    >
-      Mobx QuickStart Book store
-    </Typography>
-  )
-}
+
 
 export default App;

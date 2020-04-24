@@ -4,12 +4,14 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
- 
+//store
+import { bookSearchStore } from './stores/githubStore' ;
+import { Provider } from 'mobx-react' 
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider store={bookSearchStore}>
   <App />
-  </React.StrictMode>,
+  </Provider>,
   document.getElementById('root')
 );
 

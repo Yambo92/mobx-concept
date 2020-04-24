@@ -1,13 +1,44 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react'
-import {SearchTextField} from './components/SearchTextField'
-import { ResultsList } from './components/ResultsList'
+import {SearchTextField} from '../components/SearchTextField'
+
 //mui stuff
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import { Typography } from '@material-ui/core';
 
+import { observable, computed, decorate } from 'mobx'
 
+//1. using @computed
+class Cart {
+  @observable.shallow items = [];
+
+  @computed
+  get hasItems() {
+    return this.items.length > 0;
+  }
+}
+
+//2. using decorate()
+class Cart2 {
+  items = [];
+  get hasItems(){
+    return this.items.length > 0;
+  }
+}
+decorate(Cart2, {
+  items: observable.shallow,
+  hasItems: computed
+})
+
+//3 using computed()
+const cart = new Cart();
+
+const isCartEmpty = computed(() => {
+  return cart.items.length === 0;
+});
+
+console.log(isCartEmpty.get());
+const disposer = isCartEmpty.observe(change => console.log(change.newValue))
 
 /* 
  inject('store') , also part of the  mobx-react package. This
@@ -26,7 +57,7 @@ class App extends React.Component {
     const { store } = this.props;
     return (
       <Fragment>
-        <Header />
+        {/* <Header /> */}
         <Grid container>
             <Grid item xs={12}>
               <Paper elevation={2} style={{ padding: '1rem' }}>
@@ -36,7 +67,7 @@ class App extends React.Component {
                     />
               </Paper>
             </Grid>
-            <ResultsList style={{ marginTop: '2rem' }} />
+            {/* <ResultsList style={{ marginTop: '2rem' }} /> */}
         </Grid>
       </Fragment>
 
@@ -44,16 +75,6 @@ class App extends React.Component {
   }
 }
 
-function Header(){
-  return (
-    <Typography
-      variant="subtitle1"
-      color="inherit"
-      style={{ marginBottom: 20, textAlign: 'center' }}
-    >
-      Mobx QuickStart Book store
-    </Typography>
-  )
-}
+
 
 export default App;

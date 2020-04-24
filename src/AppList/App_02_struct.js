@@ -1,13 +1,35 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react'
-import {SearchTextField} from './components/SearchTextField'
-import { ResultsList } from './components/ResultsList'
+import {SearchTextField} from '../components/SearchTextField'
+
 //mui stuff
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import { Typography } from '@material-ui/core';
 
+import { observable, autorun, action } from 'mobx'
 
+class Sphere {
+  @observable.struct location = { x: 0, y: 0 };
+
+  constructor() {
+    autorun(() => {
+      console.log(
+        `Current location: (${this.location.x}, ${this.location.y})`
+      );
+      
+    })
+  }
+  @action
+  moveTo(x, y) {
+    this.location = { x, y}
+  }
+}
+
+let x = new Sphere();
+x.moveTo(0, 0)
+x.moveTo(10, 20)
+
+x.moveTo(23, 30)
 
 /* 
  inject('store') , also part of the  mobx-react package. This
@@ -26,7 +48,7 @@ class App extends React.Component {
     const { store } = this.props;
     return (
       <Fragment>
-        <Header />
+        {/* <Header /> */}
         <Grid container>
             <Grid item xs={12}>
               <Paper elevation={2} style={{ padding: '1rem' }}>
@@ -36,7 +58,7 @@ class App extends React.Component {
                     />
               </Paper>
             </Grid>
-            <ResultsList style={{ marginTop: '2rem' }} />
+            {/* <ResultsList style={{ marginTop: '2rem' }} /> */}
         </Grid>
       </Fragment>
 
@@ -44,16 +66,6 @@ class App extends React.Component {
   }
 }
 
-function Header(){
-  return (
-    <Typography
-      variant="subtitle1"
-      color="inherit"
-      style={{ marginBottom: 20, textAlign: 'center' }}
-    >
-      Mobx QuickStart Book store
-    </Typography>
-  )
-}
+
 
 export default App;
